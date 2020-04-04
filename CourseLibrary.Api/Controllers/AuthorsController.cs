@@ -29,11 +29,13 @@ namespace CourseLibrary.Api.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet()]
+        [HttpHead]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
             try
             {
+                //throw new Exception("TEST__");
                 var resultAuthors = _courseLibraryRepository.GetAuthors();
 
                 return Ok(_mapper.Map<IEnumerable<AuthorDto>>(resultAuthors));
@@ -41,8 +43,7 @@ namespace CourseLibrary.Api.Controllers
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure __");
-            }
-
+            } 
             #region Mapper antiguio
             //var authors = new List<AuthorDto>();
             //foreach (var author in resultAuthors)
