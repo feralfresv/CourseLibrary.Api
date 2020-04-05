@@ -7,6 +7,7 @@ using AutoMapper;
 using CourseLibrary.Api.Helpers;
 using CourseLibrary.Api.Models;
 using CourseLibrary.Api.ResourceParameters;
+using CourseLibrary.API.Entities;
 using CourseLibrary.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace CourseLibrary.Api.Controllers
             #endregion
         }
 
-        [HttpGet("{authorId}")]
+        [HttpGet("{authorId}", Name ="GetAuthor")]
         public IActionResult GetAuthors(Guid authorId)
         {
             try
@@ -74,9 +75,30 @@ namespace CourseLibrary.Api.Controllers
             }
             catch (Exception)
             {
-
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure __");
             }
+        }
+
+        [HttpPost]
+        public ActionResult<AuthorDto> CreateAuthor(AuthorForCreationDto authorForCreation)
+        {
+            //Validate JSON
+            if (authorForCreation == null) return BadRequest();
+            var authorEntity = _mapper.Map<Author>(authorForCreation);
+            _courseLibraryRepository.AddAuthor(authorEntity);
+            _courseLibraryRepository.Save();
+
+            var authorReturn = _mapper.Map<AuthorDto>(authorEntity);
+            return CreatedAtRoute("GetAuthor",
+                new { authorId = authorReturn.Id },
+                authorReturn);
+        }
+
+        [HttpOptions]
+        public IActionResult GetAuthorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS, POST");
+            return Ok();
         }
     }
 }

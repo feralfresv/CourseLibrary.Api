@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using CourseLibrary.Api.Helpers;
+using CourseLibrary.Api.Models;
+using CourseLibrary.API.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +21,8 @@ namespace CourseLibrary.Api.Profiles
                 .ForMember(
                     dest => dest.Age,
                     opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
+
+            CreateMap<AuthorForCreationDto, Author>();
 
         }
     }

@@ -25,14 +25,13 @@ namespace CourseLibrary.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers(setupActoin =>
-           {
-                setupActoin.ReturnHttpNotAcceptable = true;
-               setupActoin.OutputFormatters.Add(
-                   new XmlDataContractSerializerOutputFormatter());
-           }).AddXmlDataContractSerializerFormatters();
+            services.AddControllers(setupAction =>
+            {
+                setupAction.ReturnHttpNotAcceptable = true;
 
-           services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            }).AddXmlDataContractSerializerFormatters();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
              
            services.AddScoped<ICourseLibraryRepository, CourseLibraryRepository>();
 
@@ -52,7 +51,14 @@ namespace CourseLibrary.API
             }
             else
             {
-                app.UseExceptionHandler();
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
+                    });
+                });
             }
 
             app.UseRouting();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CourseLibrary.Api.Models;
+using CourseLibrary.API.Entities;
 using CourseLibrary.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ namespace CourseLibrary.Api.Controllers
             }
         }
 
-        [HttpGet("{courseId}")]
+        [HttpGet("{courseId}", Name ="GetCourseFOrAuthor")]
         public ActionResult<CourseDto> GetCourseForAuthor(Guid authorId, Guid courseId)
         {
             try
@@ -62,6 +63,22 @@ namespace CourseLibrary.Api.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure __");
             }
+        }
+
+        [HttpPost()]
+        public ActionResult<CourseForCreationDto> CreateCOurseForAuthor(Guid authorId, CourseForCreationDto course)
+             {
+            //Validate {authorId}
+            if (!_courseLibraryRepository.AuthorExists(authorId)) return NotFound();
+            if (course == null) return BadRequest();
+
+            var courseEntity = _mapper.Map<Course>(course);
+            _courseLibraryRepository.AddCourse(authorId, courseEntity);
+            _courseLibraryRepository.Save();
+
+            var courseReturn = _mapper.Map<CourseDto>(courseEntity);
+            return CreatedAtRoute("GetCourseFOrAuthor",
+                new { authorId = authorId, courseId = courseReturn.Id }, courseReturn);
         }
     }
 }
