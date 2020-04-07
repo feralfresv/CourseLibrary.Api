@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace CourseLibrary.Api.Models
 {
-    public class CourseForCreationDto : CourseForManipulationDto
+    public class CourseForUpdateDto : CourseForManipulationDto
     {
-
+        [Required(ErrorMessage = "You should fill out a descrioption__")]
+        public override string Description { get => base.Description; set => base.Description = value; }
     }
 }
