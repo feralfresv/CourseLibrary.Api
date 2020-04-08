@@ -60,8 +60,5 @@ namespace CourseLibrary.Api.Controllers
             var idsAsString = string.Join(",",authorCollectionToReturn.Select(a => a.Id));
             return CreatedAtRoute("GetAuthorCollection", new { ids = idsAsString }, authorCollectionToReturn);   
         }
-
-
-        [HttpDelete]
     }
 }
