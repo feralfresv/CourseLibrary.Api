@@ -61,5 +61,7 @@ namespace CourseLibrary.Api.Controllers
             return CreatedAtRoute("GetAuthorCollection", new { ids = idsAsString }, authorCollectionToReturn);   
         }
 
+
+        [HttpDelete]
     }
 }
